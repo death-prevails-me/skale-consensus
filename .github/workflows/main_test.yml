@@ -104,6 +104,9 @@ jobs:
     - name: Aggregate Results
       uses: actions/github-script@v6
       with:
+          - name: Aggregate Results
+      uses: actions/github-script@v6
+      with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const fs = require('fs');
@@ -124,7 +127,7 @@ jobs:
             mythril: safeReadFile('mythril-vulnerability-report.txt'),
           };
 
-          github.rest.issues.create({
+          await github.rest.issues.create({
             owner: context.repo.owner,
             repo: context.repo.name,
             title: '🚨 Smart Contract Security Analysis Results',
@@ -142,16 +145,5 @@ ${reports.manticore}
 #### Vulnerability Scan
 ${reports.mythril}
 
-*Automated security analysis completed.*`
+*Automated security analysis completed.*`,
           });
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: security-analysis-reports
-        path: |
-          slither-report.md
-          echidna-report.txt
-          foundry-fuzz-report.txt
-          manticore-report.txt
-          mythril-vulnerability-report.txt
